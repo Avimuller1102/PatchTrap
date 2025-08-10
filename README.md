@@ -10,6 +10,8 @@ It **seals** sensitive functions (e.g., `builtins.open`, `socket.socket`, `subpr
 
 ---
 
+
+
 ## Why?
 
 Attackers and test harnesses often **monkey-patch** functions at runtime to intercept or change behavior (e.g., to bypass checks, re-route I/O, or hide activity). This is powerful—but also a risk in untrusted or complex environments.
@@ -30,6 +32,9 @@ Reports added/removed/changed os.environ keys.
 
 optionally self-heals
 Puts originals back for replaced targets (--auto-restore 1).
+
+
+
 
 **How it works (short)**
 
@@ -52,7 +57,10 @@ anti-debug / anti-tamper repos exist, but typically tie into debugging detection
 
 
 
+
 **Limitations**
+
+
 PatchTrap can’t stop every form of runtime manipulation. Extremely crafty code can patch between checks.
 
 Fingerprints of builtins are identity-based; if your script intentionally rebinds modules or proxies, you’ll get alerts (by design).
