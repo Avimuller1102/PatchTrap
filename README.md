@@ -29,3 +29,17 @@ python patchtrap.py run myapp.py --watch mypkg.secure.validate,mypkg.db.connect 
 
 # dry-run scan: seal, run, report, but don't restore
 python patchtrap.py run suspicious.py --watch builtins.open --auto-restore 0
+
+
+
+
+
+Output example:
+
+[patchtrap] sealed 6 targets, meta_path=ok, env=baseline saved
+[patchtrap] run begin: /abs/path/suspicious.py
+[patchtrap][alert] target replaced: builtins.open  =>  restored (auto)
+[patchtrap][alert] env changed: added FOO=bar
+[patchtrap] run end: status=ok
+[patchtrap] report saved: patchtrap_report.json
+
