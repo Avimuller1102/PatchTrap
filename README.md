@@ -1,5 +1,12 @@
 # PatchTrap — live monkey-patch & tamper detector (with auto-restore)
 
+
+פאצ'טראפ הוא "שומר ראש" לתוכניות פייתון.
+הוא מריץ סקריפט פייתון תחת השגחה ובודק בזמן אמת אם הסקריפט מנסה לשנות פונקציות חשובות של פייתון, כמו open (פתיחת קבצים), socket.socket (חיבורי רשת) או subprocess.Popen (הרצת תוכניות חיצוניות).
+אם יש שינוי, פאצ'טראפ מתעד את זה ומסוגל להחזיר את הפונקציה המקורית מיד — כך שהתוכנית לא תוכל לעקוף הגנות או לבצע פעולות לא רצויות.
+
+
+
 **PatchTrap** is a tiny Python wrapper that **runs any script under a tamper alarm**.
 
 It **seals** sensitive functions (e.g., `builtins.open`, `socket.socket`, `subprocess.Popen`, `random.random`, plus your own targets), then **detects** if they get replaced or hooked at runtime (monkey-patched). When it sees tampering, PatchTrap **logs it** and can **restore** the original function automatically.
