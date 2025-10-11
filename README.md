@@ -75,10 +75,12 @@ python patchtrap_mil.py verify patchtrap_report.json
 
 # sign a report (choose one)
 python patchtrap_mil.py sign --file patchtrap_report.json --hmac-key "supersecret"
+
 python patchtrap_mil.py sign --file patchtrap_report.json --ed25519-priv ed25519-key.pem
 
 # verify signature (choose one)
 python patchtrap_mil.py verify-sign --file patchtrap_report.json --hmac-key "supersecret"
+
 python patchtrap_mil.py verify-sign --file patchtrap_report.json --ed25519-pub ed25519-pub.pem
 
 # Output example
