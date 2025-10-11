@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -- coding: utf-8 --
+
 """
 patchtrap_mil.py — single-file patch/tamper detector with auto-restore,
 tamper-evident logging (Merkle + cumulative hash chain), and optional signing.
@@ -538,3 +537,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     main()
+
