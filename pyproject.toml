@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "patchtrap"
+version = "1.0.0"
+description = "Live monkey-patch & tamper detector for Python with auto-restore and tamper-evident reporting (Merkle + Hash-chain)."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Avinoam Muller", url = "https://github.com/Avimuller1102" }
+]
+keywords = ["tamper-evident", "monkey-patch", "security", "audit", "forensics", "merkle", "integrity"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: System :: Monitoring",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+signing = ["cryptography>=41.0"]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "cryptography>=41.0",
+]
+
+[project.scripts]
+patchtrap = "patchtrap_mil:main"
+
+[project.urls]
+Homepage = "https://github.com/Avimuller1102/PatchTrap"
+Repository = "https://github.com/Avimuller1102/PatchTrap"
+"Bug Tracker" = "https://github.com/Avimuller1102/PatchTrap/issues"
+
+[tool.setuptools]
+py-modules = ["patchtrap_mil"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["patchtrap_mil"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

@@ -1,0 +1,16 @@
+{
+  "enforce": true,
+  "allow": [
+    "builtins.open",
+    "socket.socket",
+    "subprocess.Popen",
+    "random.random",
+    "target_app.*"
+  ],
+  "deny": [
+    "sys.settrace",
+    "sys.setprofile",
+    "builtins.eval",
+    "builtins.exec"
+  ]
+}

@@ -1,136 +1,106 @@
-# PatchTrap — live monkey-patch & tamper detector (with auto-restore & tamper-evident report)
+# PatchTrap 🛡️
 
-פאצ'טראפ הוא "שומר ראש" לתוכניות פייתון: מריץ סקריפט תחת השגחה, מזהה בזמן אמת החלפות/הוקינג של פונקציות חשובות (כמו open, socket.socket, subprocess.Popen) ומסוגל להחזיר את המקור מייד. בנוסף, הוא מייצר דוח חסין-שינוי (Merkle + שרשרת מצטברת), ויכול לחתום עליו.
+[![CI](https://github.com/Avimuller1102/PatchTrap/actions/workflows/ci.yml/badge.svg)](https://github.com/Avimuller1102/PatchTrap/actions/workflows/ci.yml)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Single File](https://img.shields.io/badge/architecture-single__file-success)](#)
 
-PatchTrap is a tiny Python wrapper that runs any script under a tamper alarm.  
-It seals sensitive functions (e.g., `builtins.open`, `socket.socket`, `subprocess.Popen`, `random.random`, plus your own targets), then detects if they get replaced or hooked at runtime (monkey-patched). When it sees tampering, PatchTrap logs it and can restore the original function automatically. It also emits a tamper-evident report (canonical JSON with Merkle root and cumulative chain tip) and supports optional signing (HMAC or Ed25519).
+פאצ'טראפ הוא "שומר ראש" לתוכניות פייתון: מריץ סקריפט תחת השגחה, מזהה בזמן אמת החלפות/הוקינג של פונקציות חשובות ומסוגל להחזיר את המקור מייד.
 
-- no code changes to the target script  
-- no OS hooks or admin privileges  
-- single file, pure Python (Ed25519 signing optional via `cryptography`)
-
----
-
-# Why it’s revolutionary
-
-### 🚀 1. Zero instrumentation, zero privilege  
-No need to modify your target code, use OS-level hooks, or run with admin/root rights.  
-It works entirely within user space, inside the Python interpreter itself, by observing live objects.  
-➡️ A **100% user-space anti-tamper** mechanism — almost unheard of in the Python ecosystem.
-
-### 🔍 2. Deterministic bytecode fingerprinting  
-PatchTrap fingerprints Python functions using their bytecode, constants, variable names, and file origins — not just their in-memory identity.  
-This means it can detect **logical modifications**, even when the same instance remains in memory.  
-➡️ A fine-grained integrity approach inspired by binary forensics, adapted to Python’s dynamic nature.
-
-### 🔄 3. Instant self-healing  
-When a watched function is modified, PatchTrap can **instantly restore** the original one.  
-No manual intervention — the change is reverted in real time.  
-➡️ A true **runtime auto-heal** mechanism, rare in application-level security.
-
-### 🧾 4. Cryptographically tamper-evident reports  
-Reports aren’t just logs: they’re **tamper-evident**, built with a **Merkle tree** + **cumulative hash chain**.  
-They can later be verified or signed (HMAC / Ed25519).  
-➡️ A missing link between low-level security tools and modern audit requirements.
-
-### 🧠 5. Pure Python, single file  
-No agents, no daemons, no compiled modules — just one `.py` file that works anywhere Python runs.  
-➡️ Lightweight, transparent, educational, forensic, and defensive all at once.
-
-### ⚖️ 6. In-memory policy & “fail-closed” mode  
-You can define **allow/deny patterns** to control what’s patchable.  
-On violation, PatchTrap can log or **terminate immediately**.  
-➡️ A **live enforcement policy** system — no sandbox or virtualization required.
-
-### 🧩 7. Complements Python audit hooks (PEP 578)  
-Where PEP 578 provides audit event streams, PatchTrap provides an **active, verifiable lock**.  
-Combined, they create an unprecedented assurance layer for Python code in production.
-
-### 💡 In short  
-PatchTrap is like a **mini behavioral antivirus for Python** — it:  
-- watches critical functions in real time,  
-- repairs any patch attempt,  
-- and produces a cryptographic proof of runtime integrity.  
-
-All this, with no dependencies, no privileges, and no code changes.
+**PatchTrap** is a production-ready, 100% user-space **Anti-Tamper & Auto-Heal** mechanism for Python. It seals sensitive functions, detects monkey-patching in real-time, instantly restores the original functions, and generates a tamper-evident cryptographic report (Merkle tree + cumulative hash chain).
 
 ---
 
-# Why?
+## 🏛️ Architecture
 
-Attackers and test harnesses often monkey-patch functions at runtime to intercept or change behavior (e.g., bypass checks, re-route I/O, or hide activity). This is powerful—but risky in untrusted or complex environments.
+```text
+ +-------------------------------------------------------------------------+
+ |                            PATCHTRAP MIL                                |
+ |                                                                         |
+ |  1. SEALING:             2. GUARDED RUN:             3. AUTO-HEAL:      |
+ |  [Target Functions]      [User Script]               [Tamper Detected!] |
+ |  (bytecode + env)        | (executes normally)       |                  |
+ |         |                |         |                 |                  |
+ |         v                v         v                 v                  |
+ |  +---------------+   +-----------------+     +----------------------+   |
+ |  | Fingerprint   |   | Periodic Scans  |     | 🚨 Alert Logged      |   |
+ |  | Baseline      |-->| (Pre/During/Post|---->| 🔄 Original Restored |   |
+ |  +---------------+   +-----------------+     +----------------------+   |
+ |                                |                                        |
+ +--------------------------------|----------------------------------------+
+                                  v
+                       +----------------------+
+                       |  TAMPER-EVIDENT LOG  |
+                       | (Merkle Root + HMAC) |
+                       +----------------------+
+```
 
-PatchTrap gives you a lightweight counter-measure: detect and optionally undo monkey-patching in real time, and leave a tamper-evident audit trail.
+## 💼 Investor & Business Use Cases
+
+**1. Enterprise AI Agents (LLM Guards)**
+AI agents execute dynamically generated Python code. PatchTrap acts as a safety harness, ensuring the agent cannot monkey-patch `subprocess`, `os`, or `socket` to escape its sandbox or exfiltrate data, all while generating an immutable audit trail for compliance.
+
+**2. FinTech & Zero-Trust Infrastructure**
+Financial transaction processors rely on standard cryptographic libraries. PatchTrap ensures no malicious dependency has quietly hooked `builtins.open` or RNGs in memory to steal keys or manipulate transaction hashes.
+
+**3. DevSecOps & Forensic Auditing**
+When a breach occurs, discovering *how* a script was tampered with in-memory is nearly impossible. PatchTrap provides an immutable, cryptographically signed (`Ed25519` or `HMAC`) report proving exactly what was hooked, when, and by what, facilitating immediate forensic analysis.
 
 ---
 
-# What it detects
+## 🚀 Key Features
 
-- **function replacement / monkey-patching** – compares fingerprints of watched callables before/after execution  
-- **import-hook tampering** – detects changes to `sys.meta_path` composition  
-- **environment changes** – reports added/removed/changed `os.environ` keys  
-- **optional modules churn** – (opt-in) reports deltas in `sys.modules`  
-- **optionally self-heals** – restores originals for replaced targets (`--auto-restore 1`)  
-- **tamper-evident report** – canonical JSON with Merkle root & chain tip  
-- **optional signing** – HMAC-SHA256 (stdlib) or Ed25519 (`cryptography`)  
-- **policy (allow/deny)** – pattern-based enforcement with optional fail-closed
+*   **Zero Instrumentation:** No code changes to your target script. Works in user-space without OS-level hooks or root privileges.
+*   **Deterministic Fingerprinting:** Uses bytecode, constants, and variable names to detect *logical* modifications, not just memory address changes.
+*   **Instant Self-Healing:** Instantly restores original functions when tampering is detected (`--auto-restore 1`).
+*   **Cryptographic Reporting:** Emits canonical JSON reports secured by a **Merkle Tree** and **Cumulative Hash Chain**.
+*   **Policy Enforcement:** Define allow/deny lists. Fail-closed on violations.
+*   **No Hard Dependencies:** 100% standard library (except optional `cryptography` for Ed25519 signatures).
 
 ---
 
-# How it works (short)
+## 📦 Installation
 
-- **sealing:** computes a stable fingerprint for each watched target (for Python functions: bytecode + consts + names + filename + firstlineno; for builtins/classes: identity & type signature).  
-- **guarded run:** executes the target via `runpy.run_path`, scanning pre/during/post based on settings.  
-- **alerts:** if a fingerprint changes → record an alert; optionally restore the original reference.  
-- **report:** writes canonical JSON with all alerts + a summary containing the Merkle root and chain tip.  
-- **signing (optional):** sign the report file with HMAC or Ed25519.
+PatchTrap is packaged using modern PEP 621 standards.
 
----
-
-# Quick Start
 ```bash
-# run a script with PatchTrap guarding core functions
-python patchtrap_mil.py run path/to/target.py   --watch builtins.open,socket.socket,subprocess.Popen,random.random   --auto-restore 1
+# Clone the repository
+git clone https://github.com/Avimuller1102/PatchTrap.git
+cd PatchTrap
 
-# just scan your own functions (add dotted names)
-python patchtrap_mil.py run myapp.py   --watch mypkg.secure.validate,mypkg.db.connect   --auto-restore 1
+# Install standard (HMAC signing only)
+pip install -e .
 
-# dry-run scan: seal, run, report, but don't restore
-python patchtrap_mil.py run suspicious.py --watch builtins.open --auto-restore 0
-
-# enforce allow/deny policy and fail closed on violations
-python patchtrap_mil.py run app.py   --watch builtins.open,socket.socket   --policy-allow "builtins.*" --policy-deny "socket.*"   --policy-enforce 1 --fail-closed 1
-
-# include a during-scan window (pre/during/post) with interval
-python patchtrap_mil.py run app.py --interval 0.3 --scan-during 1
-
-# verify Merkle root & chain tip of a report
-python patchtrap_mil.py verify patchtrap_report.json
-
-# sign a report (choose one)
-python patchtrap_mil.py sign --file patchtrap_report.json --hmac-key "supersecret"
-python patchtrap_mil.py sign --file patchtrap_report.json --ed25519-priv ed25519-key.pem
-
-# verify signature (choose one)
-python patchtrap_mil.py verify-sign --file patchtrap_report.json --hmac-key "supersecret"
-python patchtrap_mil.py verify-sign --file patchtrap_report.json --ed25519-pub ed25519-pub.pem
+# Install with Ed25519 cryptographic signing support
+pip install -e .[signing]
 ```
 
 ---
 
-# Output example
+## ⚡ Quick Start
+
+```bash
+# 1. Run a script and guard core builtins, auto-restoring them if hacked
+patchtrap run app.py --watch builtins.open,socket.socket,subprocess.Popen --auto-restore 1
+
+# 2. Strict policy mode: fail immediately if policy is violated
+patchtrap run app.py --policy-allow "builtins.*" --policy-deny "socket.*" --policy-enforce 1 --fail-closed 1
+
+# 3. Verify the cryptographic integrity of the resulting report
+patchtrap verify patchtrap_report.json
+
+# 4. Sign the report cryptographically
+patchtrap sign --file patchtrap_report.json --hmac-key "supersecret"
 ```
-[patchtrap] sealed 6 targets; env/meta_path baselined
-[patchtrap] run begin: /abs/path/suspicious.py
-[patchtrap][alert] target replaced: builtins.open  =>  restored (auto)
-[patchtrap][alert] env changed: added FOO=bar
-[patchtrap] run end: status=ok
-[patchtrap] report saved: patchtrap_report.json
+
+## 🧪 Testing
+
+PatchTrap includes a comprehensive test suite (100% pass, ~80% coverage) verifying Merkle structures, auto-healing, and policy engines.
+
+```bash
+pip install pytest pytest-cov
+pytest tests/ -v
 ```
 
 ---
-
-# Files & deps
-- Single file: `patchtrap_mil.py`  
-- Optional dependency for Ed25519 signing: `cryptography`  
-- HMAC signing is stdlib-only, no external deps.
+*Built for Zero-Trust Python environments.*

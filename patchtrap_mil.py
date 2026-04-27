@@ -24,6 +24,32 @@ Usage (quick):
 """
 
 from __future__ import annotations
+
+__version__ = "1.0.0"
+__all__ = [
+    # Core
+    "PatchTrapMIL",
+    "Policy",
+    "SecurityError",
+    # Crypto/Hash Utils
+    "canonical_bytes",
+    "leaf_hash",
+    "node_hash",
+    "merkle_root",
+    "chain_next",
+    # Fingerprinting
+    "_fingerprint_callable",
+    "_resolve_dotted",
+    # Signing/Verification
+    "report_load",
+    "report_verify_integrity",
+    "sign_hmac",
+    "verify_hmac",
+    "sign_ed25519",
+    "verify_ed25519",
+    # CLI
+    "main"
+]
 import argparse
 import base64
 import hashlib
