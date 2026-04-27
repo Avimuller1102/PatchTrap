@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(New-Item -ItemType Directory -Force -Path \"c:\\\\Users\\\\Avinoam Muller\\\\.antigravity\\\\PatchTrap\\\\docs\\\\superpowers\\\\specs\")"
-    ]
-  }
-}
